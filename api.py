@@ -1,6 +1,8 @@
 import requests
 import json
+import logging
 import os
+logging.basicConfig(format='%(asctime)s.%(msecs)03d [%(threadName)s] - %(message)s', datefmt='%H:%M:%S', level=logging.INFO)
 
 class PixabayAPI:
   def __init__(self, key, carpeta_imagenes):
@@ -41,9 +43,11 @@ class PixabayAPI:
     return map(lambda h: h['largeImageURL'], jsonResponse['hits'])
 
   def descargar_imagen(self, url):
+    logging.info(f'Descargando{url}')
     # Bajo la imagen (una chorrera de bytes)
+    
     bytes_imagen = requests.get(url)
-
+  
     # Corto a la URL por cada barra - split('/') - 
     # y me quedo con el último pedazo - [-1] -, 
     # que es el nombre del archivo
@@ -54,3 +58,6 @@ class PixabayAPI:
     ruta_archivo = os.path.join(self.carpeta_imagenes, nombre_imagen)
     with open(ruta_archivo, 'wb') as archivo:
       archivo.write(bytes_imagen.content)
+  
+  def run():
+    self.descargar_imagen()
